@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block title %}Добавление заметки{% endblock %}
+{% block content %}
+<a href="{{ url_for('index') }}" class="back-link">Вернуться ко всем заметкам</a>
+<form method="post">
+    <label>Заголовок</label>
+    <input type="text" name="title" placeholder="Введите Заголовок...">
+
+    <label>Категория</label>
+    <select name="category">
+        {% for cat in categories %}
+            <option value="{{cat}}">{{cat}}</option>
+        {% endfor %}
+    </select>
+
+    <label>Текст</label>
+    <textarea name="content" rows="8" placeholder="Введите текст заметки"></textarea>
+
+    <button type="submit">Добавить заметку</button>
+</form>
+{% endblock %}

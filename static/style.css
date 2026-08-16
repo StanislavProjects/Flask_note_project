@@ -1,0 +1,8 @@
+.chip{
+    color: var(--muted);
+
+}
+
+.chip.active{
+    color: rgb(41, 165, 64);
+}

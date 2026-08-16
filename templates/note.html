@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block title %}Просмотр заметки{% endblock %}
+{% block content %}
+<a href="{{ url_for('index') }}" class="back-link">Вернуться ко всем заметкам</a>
+<div class="note-view">
+    <span class="note-category">{{ note.category }}</span>
+    <h2>{{note.title}}</h2>
+    <div class="note-meta">
+        <small>{{note.created_at.strftime('%d.%m.%Y %H:%M')}}</small>
+    </div>
+    <p class="note-content">{{note.content}}</p>
+</div>
+
+<a href="{{ url_for('edit_note', note_id=note.id)}}">Редактировать</a>
+{% endblock %}

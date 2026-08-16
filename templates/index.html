@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block title %}Все заметки{% endblock %}
+{% block content %}
+<div class="filters">
+    <a href="{{ url_for('index') }}" class="chip {% if selectet_category == 'Все' %} active {% endif %}">Все</a>
+    {% for cat in categories %}
+    <a href="{{ url_for('index', category=cat) }}" class="chip {% if selectet_category == cat %} active {% endif %}">{{cat}}</a>
+    {% endfor %}
+</div>
+{% if notes|length == 0 %}
+<p class="empty-state">Заметки отсутствуют</p>
+{% else %}
+<div class="notes-list">
+    {% for note in notes %}
+    <div class="note-item">
+        <span class="note-category">{{ note.category }}</span>
+        <h3>
+            <a href="{{ url_for('view_note', note_id=note.id) }}">{{note.title}}</a>
+        </h3>
+        <p>{{ note.short_content() }}</p>
+        <small>{{note.created_at.strftime('%d.%m.%Y %H:%M')}}</small>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+{% endblock %}

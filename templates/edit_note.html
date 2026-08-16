@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %}Редактирование заметки {{note.title}} {% endblock %}
+{% block content %}
+<a href="{{ url_for('view_note', note_id=note.id) }}" class="back-link">Вернуться к заметке</a>
+<form method="post">
+    <label>Заголовок</label>
+    <input type="text" value="{{note.title}}" name="title">
+
+    <label>Текст заметки</label>
+    <textarea name="content" rows="8" placeholder="Введите текст заметки">{{note.content}}</textarea>
+
+    <button type="submit">Отправить изменения</button>
+</form>
+{% endblock %}

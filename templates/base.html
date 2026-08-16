@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}">
+    <title>{% block title %}Дневник заметок{% endblock %}</title>
+    <style>
+    :root {
+        --bg: #f5f6fa;
+        --surface: #ffffff;
+        --border: #e4e6ec;
+        --text: #22242c;
+        --text-muted: #7c8090;
+        --accent: #5b5ff5;
+        --accent-hover: #4a4dd6;
+        --accent-light: #edeeff;
+        --radius: 12px;
+        --shadow: 0 1px 2px rgba(20, 20, 40, 0.04), 0 4px 16px rgba(20, 20, 40, 0.06);
+    }
+ 
+    * {
+        box-sizing: border-box;
+    }
+ 
+    body {
+        margin: 0;
+        font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.5;
+    }
+ 
+    .page {
+        max-width: 720px;
+        margin: 0 auto;
+        padding: 32px 20px 64px;
+    }
+ 
+    header.site-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 28px;
+    }
+ 
+    header.site-header .brand {
+        font-size: 1.3rem;
+        font-weight: 700;
+        text-decoration: none;
+        color: var(--text);
+        letter-spacing: -0.02em;
+    }
+ 
+    header.site-header .brand span {
+        color: var(--accent);
+    }
+ 
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 9px 18px;
+        border-radius: 999px;
+        background: var(--accent);
+        color: #fff;
+        text-decoration: none;
+        font-size: 0.9rem;
+        font-weight: 600;
+        border: none;
+        cursor: pointer;
+        transition: background 0.15s ease, transform 0.1s ease;
+    }
+ 
+    .btn:hover {
+        background: var(--accent-hover);
+    }
+ 
+    .btn:active {
+        transform: scale(0.97);
+    }
+ 
+    .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        color: var(--text-muted);
+        text-decoration: none;
+        font-size: 0.9rem;
+        margin-bottom: 20px;
+        transition: color 0.15s ease;
+    }
+ 
+    .back-link:hover {
+        color: var(--accent);
+    }
+ 
+    .back-link::before {
+        content: "←";
+    }
+ 
+    a {
+        color: var(--accent);
+    }
+ 
+    .card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+    }
+ 
+    .flash {
+        background: var(--accent-light);
+        color: var(--accent-hover);
+        border-radius: var(--radius);
+        padding: 12px 16px;
+        margin-bottom: 20px;
+        font-size: 0.9rem;
+    }
+ 
+    /* forms */
+    form {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        padding: 24px;
+    }
+ 
+    form label {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--text-muted);
+        margin-bottom: -8px;
+    }
+ 
+    form input[type="text"],
+    form select,
+    form textarea {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        font-size: 0.95rem;
+        font-family: inherit;
+        color: var(--text);
+        background: var(--bg);
+        transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+ 
+    form input[type="text"]:focus,
+    form select:focus,
+    form textarea:focus {
+        outline: none;
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px var(--accent-light);
+        background: var(--surface);
+    }
+ 
+    form textarea {
+        resize: vertical;
+    }
+ 
+    form button[type="submit"] {
+        align-self: flex-start;
+        padding: 10px 22px;
+        border: none;
+        border-radius: 999px;
+        background: var(--accent);
+        color: #fff;
+        font-size: 0.95rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.15s ease, transform 0.1s ease;
+    }
+ 
+    form button[type="submit"]:hover {
+        background: var(--accent-hover);
+    }
+ 
+    form button[type="submit"]:active {
+        transform: scale(0.97);
+    }
+ 
+    /* filters (chips) */
+    .filters {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 24px;
+    }
+ 
+    .chip {
+        padding: 7px 16px;
+        border-radius: 999px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        color: var(--text-muted);
+        text-decoration: none;
+        font-size: 0.85rem;
+        font-weight: 500;
+        transition: all 0.15s ease;
+    }
+ 
+    .chip:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+    }
+ 
+    .chip.active {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: #fff;
+    }
+ 
+    /* notes list */
+    .notes-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+ 
+    .note-item {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        padding: 18px 20px;
+        transition: transform 0.12s ease, box-shadow 0.12s ease;
+    }
+ 
+    .note-item:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(20, 20, 40, 0.06), 0 8px 24px rgba(20, 20, 40, 0.08);
+    }
+ 
+    .note-category {
+        display: inline-block;
+        font-size: 0.72rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: var(--accent);
+        background: var(--accent-light);
+        padding: 3px 10px;
+        border-radius: 999px;
+        margin-bottom: 8px;
+    }
+ 
+    .note-item h3 {
+        margin: 0 0 6px;
+        font-size: 1.1rem;
+    }
+ 
+    .note-item h3 a {
+        color: var(--text);
+        text-decoration: none;
+    }
+ 
+    .note-item h3 a:hover {
+        color: var(--accent);
+    }
+ 
+    .note-item p {
+        margin: 0 0 10px;
+        color: var(--text-muted);
+        font-size: 0.92rem;
+    }
+ 
+    .note-item small {
+        color: var(--text-muted);
+        font-size: 0.78rem;
+    }
+ 
+    .empty-state {
+        text-align: center;
+        padding: 48px 20px;
+        color: var(--text-muted);
+        background: var(--surface);
+        border: 1px dashed var(--border);
+        border-radius: var(--radius);
+    }
+ 
+    /* single note view */
+    .note-view {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        padding: 28px;
+    }
+ 
+    .note-view h2 {
+        margin: 4px 0 10px;
+        font-size: 1.5rem;
+    }
+ 
+    .note-view .note-meta {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 20px;
+        color: var(--text-muted);
+        font-size: 0.85rem;
+    }
+ 
+    .note-view .note-content {
+        white-space: pre-wrap;
+        font-size: 1rem;
+        color: var(--text);
+    }
+</style>
+</head>
+<body>
+    <header>
+        <h1>
+            <a href="{{ url_for('index') }}">Дневник заметок</a>
+        </h1>
+        <a href="{{ url_for('add_note') }}">Добавление заметки</a>
+    </header>
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+</body>
+</html>
