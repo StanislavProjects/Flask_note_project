@@ -2,7 +2,7 @@
 {% block title %}Добавление заметки{% endblock %}
 {% block content %}
 <a href="{{ url_for('index') }}" class="back-link">Вернуться ко всем заметкам</a>
-<form method="post">
+<form method="post" enctype="multipart/form-data">
     <label>Заголовок</label>
     <input type="text" name="title" placeholder="Введите Заголовок...">
 
@@ -15,6 +15,9 @@
 
     <label>Текст</label>
     <textarea name="content" rows="8" placeholder="Введите текст заметки"></textarea>
+
+    <label>Фото</label>
+    <input type="file" name="image" accept="image/*">
 
     <button type="submit">Добавить заметку</button>
 </form>

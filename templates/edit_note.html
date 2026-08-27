@@ -9,6 +9,13 @@
     <label>Текст заметки</label>
     <textarea name="content" rows="8" placeholder="Введите текст заметки">{{note.content}}</textarea>
 
+    <label>Категория</label>
+    <select name="category">
+        {% for cat in categories %}
+            <option value="{{cat}}">{{cat}}</option>
+        {% endfor %}
+    </select>
+
     <button type="submit">Отправить изменения</button>
 </form>
 {% endblock %}
