@@ -1,15 +1,28 @@
 {% extends 'base.html' %}
 {% block title %}Авторизация{% endblock %}
 {% block content %}
-<form method="post">
-    <a href="{{ url_for('register') }}">Создать аккаунт</a>
+    <div class="auth-form">
+        <form method="post">
+            <div class="auth-header">
+                <h2>🔐 Вход в систему</h2>
+                <p>Войдите в свой аккаунт, чтобы продолжить</p>
+            </div>
 
-    <h2>Имя пользователя</h2>
-    <input type="text" placeholder="Введите имя пользователя..." name="username">
+            <div class="form-group">
+                <label for="username">Имя пользователя</label>
+                <input type="text" name="username" id="username" placeholder="Введите имя пользователя..." required autofocus>
+            </div>
 
-    <h2>Пароль</h2>
-    <input type="password" placeholder="Введите пароль..." name="password">
+            <div class="form-group">
+                <label for="password">Пароль</label>
+                <input type="password" name="password" id="password" placeholder="Введите пароль..." required>
+            </div>
 
-    <button type="submit">Авторизоваться</button>
-</form>
+            <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center;">Войти</button>
+
+            <div class="auth-switch">
+                Нет аккаунта? <a href="{{ url_for('register') }}">Зарегистрироваться</a>
+            </div>
+        </form>
+    </div>
 {% endblock %}

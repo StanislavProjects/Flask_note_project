@@ -8,9 +8,11 @@ db = SQLAlchemy()
 class Note(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key = True)
     title = db.Column(db.String(120), nullable = False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable = False)
     content = db.Column(db.Text, nullable = False)
     category = db.Column(db.String(50), default = 'Общие')
     image = db.Column(db.String(255))
+    ispinet = db.Column(db.Boolean, default=False)
     created_at = db.Column(db.DateTime, default = datetime.utcnow)
 
     def __repr__(self):

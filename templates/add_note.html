@@ -1,24 +1,39 @@
 {% extends 'base.html' %}
 {% block title %}Добавление заметки{% endblock %}
 {% block content %}
-<a href="{{ url_for('index') }}" class="back-link">Вернуться ко всем заметкам</a>
-<form method="post" enctype="multipart/form-data">
-    <label>Заголовок</label>
-    <input type="text" name="title" placeholder="Введите Заголовок...">
+    <a href="{{ url_for('index') }}" class="back-link">Вернуться ко всем заметкам</a>
 
-    <label>Категория</label>
-    <select name="category">
-        {% for cat in categories %}
-            <option value="{{cat}}">{{cat}}</option>
-        {% endfor %}
-    </select>
+    <form method="post" enctype="multipart/form-data">
+        <h2 style="margin-bottom: -8px; font-size: 1.3rem;">✏️ Новая заметка</h2>
+        <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: -4px;">Заполните поля, чтобы создать заметку</p>
 
-    <label>Текст</label>
-    <textarea name="content" rows="8" placeholder="Введите текст заметки"></textarea>
+        <div class="form-group">
+            <label for="title">Заголовок <span class="label-hint">(обязательно)</span></label>
+            <input type="text" name="title" id="title" placeholder="Введите заголовок заметки..." required>
+        </div>
 
-    <label>Фото</label>
-    <input type="file" name="image" accept="image/*">
+        <div class="form-group">
+            <label for="category">Категория</label>
+            <select name="category" id="category">
+                {% for cat in categories %}
+                    <option value="{{ cat }}">{{ cat }}</option>
+                {% endfor %}
+            </select>
+        </div>
 
-    <button type="submit">Добавить заметку</button>
-</form>
+        <div class="form-group">
+            <label for="content">Текст заметки</label>
+            <textarea name="content" id="content" rows="8" placeholder="Введите текст заметки..."></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="image">Изображение <span class="label-hint">(необязательно)</span></label>
+            <input type="file" name="image" id="image" accept="image/*">
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">✅ Добавить заметку</button>
+            <a href="{{ url_for('index') }}" class="btn btn-secondary">Отмена</a>
+        </div>
+    </form>
 {% endblock %}

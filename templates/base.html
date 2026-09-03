@@ -1,330 +1,800 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <title>{% block title %}Дневник заметок{% endblock %}</title>
     <style>
-    :root {
-        --bg: #f5f6fa;
-        --surface: #ffffff;
-        --border: #e4e6ec;
-        --text: #22242c;
-        --text-muted: #7c8090;
-        --accent: #5b5ff5;
-        --accent-hover: #4a4dd6;
-        --accent-light: #edeeff;
-        --radius: 12px;
-        --shadow: 0 1px 2px rgba(20, 20, 40, 0.04), 0 4px 16px rgba(20, 20, 40, 0.06);
-    }
- 
-    * {
-        box-sizing: border-box;
-    }
- 
-    body {
-        margin: 0;
-        font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
-        background: var(--bg);
-        color: var(--text);
-        line-height: 1.5;
-    }
- 
-    .page {
-        max-width: 720px;
-        margin: 0 auto;
-        padding: 32px 20px 64px;
-    }
- 
-    header.site-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-bottom: 28px;
-    }
- 
-    header.site-header .brand {
-        font-size: 1.3rem;
-        font-weight: 700;
-        text-decoration: none;
-        color: var(--text);
-        letter-spacing: -0.02em;
-    }
- 
-    header.site-header .brand span {
-        color: var(--accent);
-    }
- 
-    .btn {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        padding: 9px 18px;
-        border-radius: 999px;
-        background: var(--accent);
-        color: #fff;
-        text-decoration: none;
-        font-size: 0.9rem;
-        font-weight: 600;
-        border: none;
-        cursor: pointer;
-        transition: background 0.15s ease, transform 0.1s ease;
-    }
- 
-    .btn:hover {
-        background: var(--accent-hover);
-    }
- 
-    .btn:active {
-        transform: scale(0.97);
-    }
- 
-    .back-link {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        color: var(--text-muted);
-        text-decoration: none;
-        font-size: 0.9rem;
-        margin-bottom: 20px;
-        transition: color 0.15s ease;
-    }
- 
-    .back-link:hover {
-        color: var(--accent);
-    }
- 
-    .back-link::before {
-        content: "←";
-    }
- 
-    a {
-        color: var(--accent);
-    }
- 
-    .card {
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: var(--radius);
-        box-shadow: var(--shadow);
-    }
- 
-    .flash {
-        background: var(--accent-light);
-        color: var(--accent-hover);
-        border-radius: var(--radius);
-        padding: 12px 16px;
-        margin-bottom: 20px;
-        font-size: 0.9rem;
-    }
- 
-    /* forms */
-    form {
-        display: flex;
-        flex-direction: column;
-        gap: 16px;
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: var(--radius);
-        box-shadow: var(--shadow);
-        padding: 24px;
-    }
- 
-    form label {
-        font-size: 0.85rem;
-        font-weight: 600;
-        color: var(--text-muted);
-        margin-bottom: -8px;
-    }
- 
-    form input[type="text"],
-    form select,
-    form textarea {
-        width: 100%;
-        padding: 10px 12px;
-        border: 1px solid var(--border);
-        border-radius: 8px;
-        font-size: 0.95rem;
-        font-family: inherit;
-        color: var(--text);
-        background: var(--bg);
-        transition: border-color 0.15s ease, box-shadow 0.15s ease;
-    }
- 
-    form input[type="text"]:focus,
-    form select:focus,
-    form textarea:focus {
-        outline: none;
-        border-color: var(--accent);
-        box-shadow: 0 0 0 3px var(--accent-light);
-        background: var(--surface);
-    }
- 
-    form textarea {
-        resize: vertical;
-    }
- 
-    form button[type="submit"] {
-        align-self: flex-start;
-        padding: 10px 22px;
-        border: none;
-        border-radius: 999px;
-        background: var(--accent);
-        color: #fff;
-        font-size: 0.95rem;
-        font-weight: 600;
-        cursor: pointer;
-        transition: background 0.15s ease, transform 0.1s ease;
-    }
- 
-    form button[type="submit"]:hover {
-        background: var(--accent-hover);
-    }
- 
-    form button[type="submit"]:active {
-        transform: scale(0.97);
-    }
- 
-    /* filters (chips) */
-    .filters {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
-        margin-bottom: 24px;
-    }
- 
-    .chip {
-        padding: 7px 16px;
-        border-radius: 999px;
-        background: var(--surface);
-        border: 1px solid var(--border);
-        color: var(--text-muted);
-        text-decoration: none;
-        font-size: 0.85rem;
-        font-weight: 500;
-        transition: all 0.15s ease;
-    }
- 
-    .chip:hover {
-        border-color: var(--accent);
-        color: var(--accent);
-    }
- 
-    .chip.active {
-        background: var(--accent);
-        border-color: var(--accent);
-        color: #fff;
-    }
- 
-    /* notes list */
-    .notes-list {
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-    }
- 
-    .note-item {
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: var(--radius);
-        box-shadow: var(--shadow);
-        padding: 18px 20px;
-        transition: transform 0.12s ease, box-shadow 0.12s ease;
-    }
- 
-    .note-item:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 8px rgba(20, 20, 40, 0.06), 0 8px 24px rgba(20, 20, 40, 0.08);
-    }
- 
-    .note-category {
-        display: inline-block;
-        font-size: 0.72rem;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.04em;
-        color: var(--accent);
-        background: var(--accent-light);
-        padding: 3px 10px;
-        border-radius: 999px;
-        margin-bottom: 8px;
-    }
- 
-    .note-item h3 {
-        margin: 0 0 6px;
-        font-size: 1.1rem;
-    }
- 
-    .note-item h3 a {
-        color: var(--text);
-        text-decoration: none;
-    }
- 
-    .note-item h3 a:hover {
-        color: var(--accent);
-    }
- 
-    .note-item p {
-        margin: 0 0 10px;
-        color: var(--text-muted);
-        font-size: 0.92rem;
-    }
- 
-    .note-item small {
-        color: var(--text-muted);
-        font-size: 0.78rem;
-    }
- 
-    .empty-state {
-        text-align: center;
-        padding: 48px 20px;
-        color: var(--text-muted);
-        background: var(--surface);
-        border: 1px dashed var(--border);
-        border-radius: var(--radius);
-    }
- 
-    /* single note view */
-    .note-view {
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: var(--radius);
-        box-shadow: var(--shadow);
-        padding: 28px;
-    }
- 
-    .note-view h2 {
-        margin: 4px 0 10px;
-        font-size: 1.5rem;
-    }
- 
-    .note-view .note-meta {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        margin-bottom: 20px;
-        color: var(--text-muted);
-        font-size: 0.85rem;
-    }
- 
-    .note-view .note-content {
-        white-space: pre-wrap;
-        font-size: 1rem;
-        color: var(--text);
-    }
-</style>
+        :root {
+            --bg-primary: #f8fafc;
+            --bg-secondary: #ffffff;
+            --bg-card: #ffffff;
+            --bg-hover: #f1f5f9;
+            --border-color: #e2e8f0;
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-muted: #94a3b8;
+            --accent: #6366f1;
+            --accent-hover: #4f46e5;
+            --accent-light: #eef2ff;
+            --accent-gradient: linear-gradient(135deg, #6366f1, #8b5cf6);
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            --radius: 12px;
+            --radius-lg: 16px;
+            --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .page-wrapper {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 32px 24px 64px;
+        }
+
+        /* ===== HEADER ===== */
+        .site-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 24px;
+            background: var(--bg-secondary);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 32px;
+            border: 1px solid var(--border-color);
+        }
+
+        .site-header .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.35rem;
+            font-weight: 700;
+            text-decoration: none;
+            color: var(--text-primary);
+            letter-spacing: -0.02em;
+        }
+
+        .site-header .brand .brand-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            background: var(--accent-gradient);
+            color: #fff;
+            border-radius: 10px;
+            font-size: 1.1rem;
+        }
+
+        .site-header .brand span {
+            color: var(--accent);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        /* ===== BUTTONS ===== */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 10px 20px;
+            border-radius: 999px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: inherit;
+        }
+
+        .btn-primary {
+            background: var(--accent-gradient);
+            color: #fff;
+            box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0) scale(0.98);
+        }
+
+        .btn-secondary {
+            background: var(--bg-hover);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: var(--border-color);
+            transform: translateY(-1px);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-outline:hover {
+            background: var(--bg-hover);
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: #fff;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+            transform: translateY(-1px);
+        }
+
+        .btn-sm {
+            padding: 6px 14px;
+            font-size: 0.8rem;
+        }
+
+        .btn-icon {
+            width: 36px;
+            height: 36px;
+            padding: 0;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 1rem;
+        }
+
+        .btn-icon:hover {
+            background: var(--bg-hover);
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        /* ===== BACK LINK ===== */
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-bottom: 24px;
+            transition: var(--transition);
+            padding: 6px 12px;
+            border-radius: 8px;
+        }
+
+        .back-link:hover {
+            color: var(--accent);
+            background: var(--accent-light);
+        }
+
+        .back-link::before {
+            content: "←";
+            font-size: 1.1rem;
+        }
+
+        /* ===== CARDS ===== */
+        .card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+            overflow: hidden;
+        }
+
+        .card:hover {
+            box-shadow: var(--shadow-md);
+        }
+
+        .card-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .card-body {
+            padding: 24px;
+        }
+
+        /* ===== FLASH MESSAGES ===== */
+        .flash {
+            padding: 14px 20px;
+            border-radius: var(--radius);
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            border-left: 4px solid var(--accent);
+            background: var(--accent-light);
+            color: var(--accent-hover);
+        }
+
+        .flash.error {
+            border-left-color: var(--danger);
+            background: #fef2f2;
+            color: #dc2626;
+        }
+
+        .flash.success {
+            border-left-color: var(--success);
+            background: #f0fdf4;
+            color: #16a34a;
+        }
+
+        /* ===== FORMS ===== */
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 32px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-group label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            letter-spacing: 0.01em;
+        }
+
+        .form-group .label-hint {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-weight: 400;
+        }
+
+        form input[type="text"],
+        form input[type="password"],
+        form input[type="email"],
+        form select,
+        form textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius);
+            font-size: 0.95rem;
+            font-family: inherit;
+            color: var(--text-primary);
+            background: var(--bg-primary);
+            transition: var(--transition);
+        }
+
+        form input[type="text"]:focus,
+        form input[type="password"]:focus,
+        form input[type="email"]:focus,
+        form select:focus,
+        form textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px var(--accent-light);
+            background: var(--bg-secondary);
+        }
+
+        form input[type="file"] {
+            padding: 12px 0;
+            font-size: 0.9rem;
+        }
+
+        form input[type="file"]::file-selector-button {
+            padding: 8px 20px;
+            border: none;
+            border-radius: 8px;
+            background: var(--accent-light);
+            color: var(--accent);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-right: 12px;
+        }
+
+        form input[type="file"]::file-selector-button:hover {
+            background: var(--accent);
+            color: #fff;
+        }
+
+        form textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        form select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23475569' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+            padding-right: 40px;
+            cursor: pointer;
+        }
+
+        form .form-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 8px;
+            flex-wrap: wrap;
+        }
+
+        form .form-actions .btn {
+            flex: 0 1 auto;
+        }
+
+        /* ===== CHIPS / FILTERS ===== */
+        .filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 24px;
+        }
+
+        .chip {
+            padding: 8px 18px;
+            border-radius: 999px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .chip:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            transform: translateY(-1px);
+        }
+
+        .chip.active {
+            background: var(--accent-gradient);
+            border-color: var(--accent);
+            color: #fff;
+            box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+        }
+
+        /* ===== NOTES LIST ===== */
+        .notes-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .note-item {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 20px 24px;
+            transition: var(--transition);
+            box-shadow: var(--shadow-sm);
+            position: relative;
+        }
+
+        .note-item:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--accent);
+        }
+
+        .note-item .note-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+
+        .note-item .note-title-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .note-item .note-category {
+            display: inline-flex;
+            align-items: center;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--accent);
+            background: var(--accent-light);
+            padding: 3px 12px;
+            border-radius: 999px;
+            white-space: nowrap;
+        }
+
+        .note-item h3 {
+            margin: 0;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .note-item h3 a {
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .note-item h3 a:hover {
+            color: var(--accent);
+        }
+
+        .note-item .pin-icon {
+            color: var(--warning);
+            font-size: 0.9rem;
+        }
+
+        .note-item .note-preview {
+            margin: 6px 0 12px;
+            color: var(--text-secondary);
+            font-size: 0.92rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .note-item .note-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .note-item .note-date {
+            color: var(--text-muted);
+            font-size: 0.78rem;
+        }
+
+        .note-item .note-actions {
+            display: flex;
+            gap: 6px;
+        }
+
+        .note-item .pin-toggle {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            padding: 4px 8px;
+            border-radius: 6px;
+            transition: var(--transition);
+            color: var(--text-muted);
+        }
+
+        .note-item .pin-toggle:hover {
+            background: var(--bg-hover);
+            color: var(--warning);
+        }
+
+        .note-item .pin-toggle.pinned {
+            color: var(--warning);
+        }
+
+        /* ===== SINGLE NOTE VIEW ===== */
+        .note-view {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 32px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .note-view .note-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-bottom: 12px;
+        }
+
+        .note-view .note-title-wrap {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .note-view .note-title-wrap .pin-icon {
+            color: var(--warning);
+            font-size: 1.2rem;
+        }
+
+        .note-view h2 {
+            margin: 0;
+            font-size: 1.6rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        .note-view .note-category {
+            display: inline-flex;
+            align-items: center;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--accent);
+            background: var(--accent-light);
+            padding: 4px 14px;
+            border-radius: 999px;
+        }
+
+        .note-view .note-meta {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin: 12px 0 24px;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            flex-wrap: wrap;
+        }
+
+        .note-view .note-meta .divider {
+            color: var(--border-color);
+        }
+
+        .note-view .note-content {
+            white-space: pre-wrap;
+            font-size: 1rem;
+            color: var(--text-primary);
+            line-height: 1.8;
+            background: var(--bg-primary);
+            padding: 20px 24px;
+            border-radius: var(--radius);
+            border: 1px solid var(--border-color);
+            margin-bottom: 24px;
+        }
+
+        .note-view .note-image {
+            margin-top: 20px;
+            border-radius: var(--radius);
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+
+        .note-view .note-image img {
+            width: 100%;
+            max-height: 400px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .note-view .note-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        /* ===== EMPTY STATE ===== */
+        .empty-state {
+            text-align: center;
+            padding: 64px 24px;
+            background: var(--bg-secondary);
+            border: 2px dashed var(--border-color);
+            border-radius: var(--radius-lg);
+            color: var(--text-muted);
+        }
+
+        .empty-state .empty-icon {
+            font-size: 3rem;
+            margin-bottom: 16px;
+            display: block;
+        }
+
+        .empty-state h3 {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .empty-state p {
+            margin-bottom: 20px;
+        }
+
+        /* ===== AUTH PAGES ===== */
+        .auth-form {
+            max-width: 440px;
+            margin: 0 auto;
+        }
+
+        .auth-form .auth-header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .auth-form .auth-header h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .auth-form .auth-header p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .auth-form .auth-switch {
+            text-align: center;
+            margin-top: 16px;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .auth-form .auth-switch a {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .auth-form .auth-switch a:hover {
+            text-decoration: underline;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 640px) {
+            .page-wrapper {
+                padding: 16px 12px 48px;
+            }
+
+            .site-header {
+                padding: 12px 16px;
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+
+            .site-header .brand {
+                font-size: 1.1rem;
+            }
+
+            .site-header .brand .brand-icon {
+                width: 30px;
+                height: 30px;
+                font-size: 0.9rem;
+            }
+
+            .header-actions .btn span {
+                display: none;
+            }
+
+            form {
+                padding: 20px;
+            }
+
+            .note-view {
+                padding: 20px;
+            }
+
+            .note-view h2 {
+                font-size: 1.3rem;
+            }
+
+            .note-view .note-content {
+                padding: 16px;
+                font-size: 0.92rem;
+            }
+
+            .note-item {
+                padding: 16px;
+            }
+
+            .note-item .note-header {
+                flex-direction: column;
+            }
+
+            .note-item .note-actions {
+                margin-top: 8px;
+            }
+
+            .btn {
+                padding: 8px 16px;
+                font-size: 0.8rem;
+            }
+
+            .filters {
+                gap: 6px;
+            }
+
+            .chip {
+                padding: 6px 14px;
+                font-size: 0.8rem;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .site-header .brand span {
+                display: none;
+            }
+        }
+    </style>
 </head>
 <body>
-    <header>
-        <h1>
-            <a href="{{ url_for('index') }}">Дневник заметок</a>
-        </h1>
-        <a href="{{ url_for('add_note') }}">Добавление заметки</a>
-    </header>
-    <main>
-        {% block content %}
-        {% endblock %}
-    </main>
+    <div class="page-wrapper">
+        <header class="site-header">
+            <a href="{{ url_for('index') }}" class="brand">
+                <span class="brand-icon">📓</span>
+                Дневник <span>заметок</span>
+            </a>
+            <div class="header-actions">
+                {% if request.endpoint != 'login' and request.endpoint != 'register' %}
+                    <a href="{{ url_for('add_note') }}" class="btn btn-primary">
+                        <span>✏️</span> <span>Новая заметка</span>
+                    </a>
+                    <a href="{{ url_for('logout') }}" class="btn btn-secondary btn-sm">
+                        <span>🚪</span> <span>Выход</span>
+                    </a>
+                {% endif %}
+            </div>
+        </header>
+
+        <main>
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="flash {% if category == 'error' %}error{% elif category == 'success' %}success{% endif %}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            {% block content %}{% endblock %}
+        </main>
+    </div>
 </body>
 </html>

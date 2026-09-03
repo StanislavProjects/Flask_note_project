@@ -1,21 +1,34 @@
 {% extends 'base.html' %}
-{% block title %}Редактирование заметки {{note.title}} {% endblock %}
+{% block title %}Редактирование заметки {{ note.title }}{% endblock %}
 {% block content %}
-<a href="{{ url_for('view_note', note_id=note.id) }}" class="back-link">Вернуться к заметке</a>
-<form method="post">
-    <label>Заголовок</label>
-    <input type="text" value="{{note.title}}" name="title">
+    <a href="{{ url_for('view_note', note_id=note.id) }}" class="back-link">Вернуться к заметке</a>
 
-    <label>Текст заметки</label>
-    <textarea name="content" rows="8" placeholder="Введите текст заметки">{{note.content}}</textarea>
+    <form method="post">
+        <h2 style="margin-bottom: -8px; font-size: 1.3rem;">✏️ Редактирование</h2>
+        <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: -4px;">Измените данные заметки</p>
 
-    <label>Категория</label>
-    <select name="category">
-        {% for cat in categories %}
-            <option value="{{cat}}">{{cat}}</option>
-        {% endfor %}
-    </select>
+        <div class="form-group">
+            <label for="title">Заголовок <span class="label-hint">(обязательно)</span></label>
+            <input type="text" name="title" id="title" value="{{ note.title }}" required>
+        </div>
 
-    <button type="submit">Отправить изменения</button>
-</form>
+        <div class="form-group">
+            <label for="content">Текст заметки</label>
+            <textarea name="content" id="content" rows="8">{{ note.content }}</textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="category">Категория</label>
+            <select name="category" id="category">
+                {% for cat in categories %}
+                    <option value="{{ cat }}" {% if cat == note.category %}selected{% endif %}>{{ cat }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">💾 Сохранить изменения</button>
+            <a href="{{ url_for('view_note', note_id=note.id) }}" class="btn btn-secondary">Отмена</a>
+        </div>
+    </form>
 {% endblock %}

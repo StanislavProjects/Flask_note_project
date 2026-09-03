@@ -123,13 +123,13 @@ def add_note():
         categories = CATEGORIES
     )
 
-@app.route('/delete/<int:delete_id>', methods=['POST'])
+@app.route('/delete/<int:note_id>', methods=['POST'])
 @login_required
-def delete_note(note_id):    ## Нужно сделать возможность удаления фото
+def delete_note(note_id):    
+    note = Note.query.get_or_404(note_id)
+
     if note.user_id != current_user.id:
         abort(403)
-
-    note = Note.query.get_or_404(note_id)
 
     db.session.delete(note)
     db.session.commit()
@@ -138,11 +138,11 @@ def delete_note(note_id):    ## Нужно сделать возможность
 
 @app.route('/edit/<int:note_id>', methods=['GET', 'POST'])
 @login_required
-def edit_note(note_id):      ## Нужно сделать возможность изменения фото
+def edit_note(note_id): 
+    note = Note.query.get_or_404(note_id)
+
     if note.user_id != current_user.id:
         abort(403)
-
-    note = Note.query.get_or_404(note_id)
 
     if request.method == 'POST':
         note.title = request.form['title']
@@ -153,7 +153,8 @@ def edit_note(note_id):      ## Нужно сделать возможность
 
     return render_template(
         'edit_note.html',
-        note=note
+        note=note,
+        categories=CATEGORIES
         )
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -224,6 +225,22 @@ def logout():
     logout_user()
     flash('Вы вышли из системы.', 'info')
     return redirect(url_for('login'))
+
+@app.route('/pin/<int:note_id>', methods=['POST'])
+@login_required
+def toggle_pin(note_id):
+    print('Errorrrrrrrr')
+    note = Note.query.get_or_404(note_id)
+    if note.user_id != current_user.id:
+        abort(403)
+    note.ispinet = not note.ispinet
+    db.session.commit()
+    if note.ispinet:
+        flash('Заметка успешно закреплена', 'succes')
+    if not note.ispinet:
+        flash('Заметка успешно откреплена', 'info')
+
+    return redirect(request.referrer or url_for('index'))
 
 if __name__ == '__main__':
     with app.app_context():

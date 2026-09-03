@@ -1,18 +1,45 @@
 {% extends 'base.html' %}
-{% block title %}Просмотр заметки{% endblock %}
+{% block title %}{{ note.title }}{% endblock %}
 {% block content %}
-<a href="{{ url_for('index') }}" class="back-link">Вернуться ко всем заметкам</a>
-<div class="note-view">
-    <span class="note-category">{{ note.category }}</span>
-    <h2>{{note.title}}</h2>
-    <div class="note-meta">
-        <small>{{note.created_at.strftime('%d.%m.%Y %H:%M')}}</small>
-    </div>
-    <p class="note-content">{{note.content}}</p>
-    {% if note.image %}
-    <img src="{{ url_for('static', filename = 'upload/' + note.image) }}" alt="{{ note.title }}" class="aboba">
-    {% endif %}
-</div>
+    <a href="{{ url_for('index') }}" class="back-link">Вернуться ко всем заметкам</a>
 
-<a href="{{ url_for('edit_note', note_id=note.id)}}">Редактировать</a>
+    <div class="note-view">
+        <div class="note-header">
+            <div class="note-title-wrap">
+                {% if note.ispinet %}
+                    <span class="pin-icon">📌</span>
+                {% endif %}
+                <h2>{{ note.title }}</h2>
+            </div>
+            <span class="note-category">{{ note.category }}</span>
+        </div>
+
+        <div class="note-meta">
+            <span>📅 {{ note.created_at.strftime('%d.%m.%Y %H:%M') }}</span>
+            {% if note.ispinet %}
+                <span class="divider">•</span>
+                <span style="color: var(--warning);">Закреплено</span>
+            {% endif %}
+        </div>
+
+        <div class="note-content">{{ note.content }}</div>
+
+        {% if note.image %}
+            <div class="note-image">
+                <img src="{{ url_for('static', filename='upload/' + note.image) }}" alt="{{ note.title }}">
+            </div>
+        {% endif %}
+
+        <div class="note-actions">
+            <form action="{{ url_for('toggle_pin', note_id=note.id) }}" method="post" style="display: inline; padding: 0; border: none; box-shadow: none; background: none; gap: 0;">
+                <button type="submit" class="btn {% if note.ispinet %}btn-secondary{% else %}btn-primary{% endif %}">
+                    {% if note.ispinet %}📌 Открепить{% else %}📌 Закрепить{% endif %}
+                </button>
+            </form>
+            <a href="{{ url_for('edit_note', note_id=note.id) }}" class="btn btn-secondary">✏️ Редактировать</a>
+            <form action="{{ url_for('delete_note', note_id=note.id) }}" method="post" style="display: inline; padding: 0; border: none; box-shadow: none; background: none; gap: 0;" onsubmit="return confirm('Вы уверены, что хотите удалить эту заметку?');">
+                <button type="submit" class="btn btn-danger">🗑️ Удалить</button>
+            </form>
+        </div>
+    </div>
 {% endblock %}

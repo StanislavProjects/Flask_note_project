@@ -1,29 +1,49 @@
 {% extends 'base.html' %}
 {% block title %}Все заметки{% endblock %}
 {% block content %}
-<div class="filters">
-
-    <a href="{{ url_for('logout') }}">Выход</a>
-
-    <a href="{{ url_for('index') }}" class="chip {% if selectet_category == 'Все' %} active {% endif %}">Все</a>
-    {% for cat in categories %}
-    <a href="{{ url_for('index', category=cat) }}" class="chip {% if selectet_category == cat %} active {% endif %}">{{cat}}</a>
-    {% endfor %}
-</div>
-{% if notes|length == 0 %}
-<p class="empty-state">Заметки отсутствуют</p>
-{% else %}
-<div class="notes-list">
-    {% for note in notes %}
-    <div class="note-item">
-        <span class="note-category">{{ note.category }}</span>
-        <h3>
-            <a href="{{ url_for('view_note', note_id=note.id) }}">{{note.title}}</a>
-        </h3>
-        <p>{{ note.short_content() }}</p>
-        <small>{{note.created_at.strftime('%d.%m.%Y %H:%M')}}</small>
+    <div class="filters">
+        <a href="{{ url_for('index') }}" class="chip {% if selected_category == 'Все' %} active {% endif %}">📋 Все</a>
+        {% for cat in categories %}
+            <a href="{{ url_for('index', category=cat) }}" class="chip {% if selected_category == cat %} active {% endif %}">{{ cat }}</a>
+        {% endfor %}
     </div>
-    {% endfor %}
-</div>
-{% endif %}
+
+    {% if notes|length == 0 %}
+        <div class="empty-state">
+            <span class="empty-icon">📭</span>
+            <h3>Заметок пока нет</h3>
+            <p>Создайте свою первую заметку, чтобы начать вести дневник</p>
+            <a href="{{ url_for('add_note') }}" class="btn btn-primary">➕ Создать заметку</a>
+        </div>
+    {% else %}
+        <div class="notes-list">
+            {% for note in notes %}
+                <div class="note-item">
+                    <div class="note-header">
+                        <div class="note-title-group">
+                            <span class="note-category">{{ note.category }}</span>
+                            {% if note.ispinet %}
+                                <span class="pin-icon">📌</span>
+                            {% endif %}
+                            <h3>
+                                <a href="{{ url_for('view_note', note_id=note.id) }}">{{ note.title }}</a>
+                            </h3>
+                        </div>
+                        <div class="note-actions">
+                            <form action="{{ url_for('toggle_pin', note_id=note.id) }}" method="post" style="display: inline; padding: 0; border: none; box-shadow: none; background: none; gap: 0;">
+                                <button type="submit" class="pin-toggle {% if note.ispinet %}pinned{% endif %}" title="{% if note.ispinet %}Открепить{% else %}Закрепить{% endif %}">
+                                    📌
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    <p class="note-preview">{{ note.short_content() }}</p>
+                    <div class="note-footer">
+                        <span class="note-date">{{ note.created_at.strftime('%d.%m.%Y %H:%M') }}</span>
+                        <a href="{{ url_for('view_note', note_id=note.id) }}" class="btn btn-outline btn-sm">Читать →</a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
 {% endblock %}
